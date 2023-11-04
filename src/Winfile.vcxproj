@@ -332,6 +332,7 @@
     <ClInclude Include="wfhelp.h" />
     <ClInclude Include="wfinfo.h" />
     <ClInclude Include="wfmem.h" />
+    <ClInclude Include="wftabs.h" />
     <ClInclude Include="winexp.h" />
     <ClInclude Include="winfile.h" />
     <ClInclude Include="wnetcaps.h" />
@@ -415,6 +416,7 @@
     <ClCompile Include="wfmem.c" />
     <ClCompile Include="wfprint.c" />
     <ClCompile Include="wfsearch.c" />
+    <ClCompile Include="wftabs.c" />
     <ClCompile Include="wftree.c" />
     <ClCompile Include="wfutil.c" />
     <ClCompile Include="winfile.c" />
