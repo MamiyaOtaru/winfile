@@ -93,6 +93,7 @@ BEGIN
     MENUITEM    "Additional &Preferences", IDM_PREF
     MENUITEM    SEPARATOR
     MENUITEM    "&Toolbar",                 IDM_TOOLBAR
+    MENUITEM    "T&abbar",                  IDM_TABBAR
     MENUITEM    "&Drivebar",                IDM_DRIVEBAR
     MENUITEM    "&Status Bar",              IDM_STATUSBAR
     MENUITEM    SEPARATOR

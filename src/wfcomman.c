@@ -473,7 +473,7 @@ CreateTreeWindow(
    SetWindowLongPtr(hwnd, GWL_VIEW, dwNewView);
    SetWindowLongPtr(hwnd, GWL_SORT, dwNewSort);
    SetWindowLongPtr(hwnd, GWL_ATTRIBS, dwNewAttribs);
-
+   ResetTabInfo();
    return hwnd;
 }
 
@@ -750,6 +750,8 @@ MDIClientSizeChange(HWND hwndActive,INT iFlags)
 
    InvalidateRect(hwndMDIClient, NULL, FALSE);
 
+   if (bTabBar && (iFlags & TABBAR_FLAG))
+       InvalidateRect(hwndTabBar, NULL, TRUE);
    if (bDriveBar && (iFlags & DRIVEBAR_FLAG))
       InvalidateRect(hwndDriveBar, NULL, TRUE);
    if (bToolbar && (iFlags & TOOLBAR_FLAG))
@@ -1938,17 +1940,27 @@ ChangeDisplay:
        WritePrivateProfileBool(szStatusBar, bStatusBar);
 
        ShowWindow(hwndStatus, bStatusBar ? SW_SHOW : SW_HIDE);
-       MDIClientSizeChange(hwndActive,TOOLBAR_FLAG|DRIVEBAR_FLAG);
+       MDIClientSizeChange(hwndActive,TOOLBAR_FLAG|DRIVEBAR_FLAG|TABBAR_FLAG);
 
        goto CHECK_OPTION;
        break;
+
+    case IDM_TABBAR:
+        bTemp = bTabBar = !bTabBar;
+        WritePrivateProfileBool(szTabBar, bTabBar);
+
+        ShowWindow(hwndTabBar, bTabBar ? SW_SHOW : SW_HIDE);
+        MDIClientSizeChange(hwndActive,TABBAR_FLAG|DRIVEBAR_FLAG|TOOLBAR_FLAG);
+
+        goto CHECK_OPTION;
+        break;
 
     case IDM_DRIVEBAR:
        bTemp = bDriveBar = !bDriveBar;
        WritePrivateProfileBool(szDriveBar, bDriveBar);
 
        ShowWindow(hwndDriveBar, bDriveBar ? SW_SHOW : SW_HIDE);
-       MDIClientSizeChange(hwndActive,DRIVEBAR_FLAG|TOOLBAR_FLAG);
+       MDIClientSizeChange(hwndActive,DRIVEBAR_FLAG|TOOLBAR_FLAG|TABBAR_FLAG);
 
        goto CHECK_OPTION;
        break;
@@ -1958,7 +1970,7 @@ ChangeDisplay:
        WritePrivateProfileBool(szToolbar, bToolbar);
 
        ShowWindow(hwndToolbar, bToolbar ? SW_SHOW : SW_HIDE);
-       MDIClientSizeChange(hwndActive,TOOLBAR_FLAG|DRIVEBAR_FLAG);
+       MDIClientSizeChange(hwndActive,TOOLBAR_FLAG|DRIVEBAR_FLAG|TABBAR_FLAG);
 
        goto CHECK_OPTION;
        break;

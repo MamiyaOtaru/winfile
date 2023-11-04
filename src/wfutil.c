@@ -769,6 +769,7 @@ SetMDIWindowText(
    szTitle[uTitleLen] = CHAR_NULL;
 
    SaveHistoryDir(hwnd, szTitle);
+   ResetTabInfo();
 }
 
 #define ISDIGIT(c)  ((c) >= TEXT('0') && (c) <= TEXT('9'))

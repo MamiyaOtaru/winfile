@@ -474,6 +474,13 @@ KOREAJAPANEND
 }
 
 VOID
+RepaintTabsForFontChange(HWND hwndChild)
+{
+   if (bTabBar)
+      MDIClientSizeChange(hwndChild, TABBAR_FLAG);
+}
+
+VOID
 RepaintDrivesForFontChange(HWND hwndChild)
 {
    if (bDriveBar)
@@ -586,6 +593,7 @@ NewFont()
    ReleaseDC(NULL, hdc);
 
 
+   RepaintTabsForFontChange((HWND)SendMessage(hwndMDIClient, WM_MDIGETACTIVE, 0, 0L));
    RepaintDrivesForFontChange((HWND)SendMessage(hwndMDIClient, WM_MDIGETACTIVE, 0, 0L));
 
    // now update all listboxes that are using the old

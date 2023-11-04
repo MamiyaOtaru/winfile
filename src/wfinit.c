@@ -223,6 +223,7 @@ GetSettings()
    bDisableVisualStyles = GetPrivateProfileInt(szSettings, szDisableVisualStyles, bDisableVisualStyles, szTheINIFile);
    bMirrorContent       = GetPrivateProfileInt(szSettings, szMirrorContent,    DefaultLayoutRTL(), szTheINIFile);
 
+   bTabBar         = GetPrivateProfileInt(szSettings, szTabBar,        bTabBar,        szTheINIFile);
    bDriveBar       = GetPrivateProfileInt(szSettings, szDriveBar,      bDriveBar,      szTheINIFile);
    bToolbar        = GetPrivateProfileInt(szSettings, szToolbar,       bToolbar,       szTheINIFile);
 
@@ -419,6 +420,8 @@ InitMenus()
    if (bSaveSettings)
       CheckMenuItem(hMenu, IDM_SAVESETTINGS,  MF_BYCOMMAND | MF_CHECKED);
 
+   if (bTabBar)
+      CheckMenuItem(hMenu, IDM_TABBAR, MF_BYCOMMAND | MF_CHECKED);
    if (bDriveBar)
       CheckMenuItem(hMenu, IDM_DRIVEBAR, MF_BYCOMMAND | MF_CHECKED);
    if (bToolbar)
@@ -889,6 +892,9 @@ GetTextStuff(HDC hdc)
    //
    // these are all dependent on the text metrics
    //
+   dxTab = dxFolder + tm.tmMaxCharWidth*5 + (4 * dyBorderx2); // ** jay TODO wider tabs
+   dyTab = max(dyFolder + (4 * dyBorderx2), dyText);
+
    dxDrive = dxDriveBitmap + tm.tmMaxCharWidth + (4*dyBorderx2);
    dyDrive = max(dyDriveBitmap + (4*dyBorderx2), dyText);
    dyFileName = max(dyText, dyFolder);  //  + dyBorder;
@@ -1192,6 +1198,24 @@ JAPANEND
       return FALSE;
    }
 
+   wndClass.lpszClassName = szTabsClass;
+   wndClass.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+   wndClass.lpfnWndProc = TabsWndProc;
+   // wndClass.cbClsExtra     = 0;
+   wndClass.cbWndExtra = sizeof(LONG_PTR) +// GWL_CURDRIVEIND
+       sizeof(LONG_PTR) +// GWL_CURDRIVEFOCUS
+       sizeof(LONG_PTR); // GWL_LPSTRVOLUME
+
+   // wndClass.hInstance      = hInstance;
+   // wndClass.hIcon          = NULL;
+   wndClass.hCursor = hcurArrow;
+   wndClass.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+   // wndClass.lpszMenuName   = NULL;
+
+   if (!RegisterClass(&wndClass)) {
+       return FALSE;
+   }
+
    wndClass.lpszClassName  = szDrivesClass;
    wndClass.style          = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
    wndClass.lpfnWndProc    = DrivesWndProc;
@@ -1416,6 +1440,11 @@ JAPANEND
    SetThreadPriority(hThreadUpdate, THREAD_PRIORITY_BELOW_NORMAL);
 
    //
+   // Reset tab info
+   //
+   ResetTabInfo();
+
+   //
    // Reset simple drive info, and don't let anyone block
    //
    ResetDriveInfo();
@@ -1450,6 +1479,13 @@ JAPANEND
       nCmdShow = win.sw;
 
    ShowWindow(hwndFrame, nCmdShow);
+
+   if (bTabBar) {
+       //
+       // Update the tab bar
+       //
+       InvalidateRect(hwndTabBar, NULL, TRUE);
+   }
 
    if (bDriveBar) {
       //

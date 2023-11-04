@@ -38,6 +38,8 @@
 #include "wfmem.h"
 #include "res.h"
 
+#include "wftabs.h"
+
 #ifdef HEAPCHECK
 #include "heap.h"
 #endif
@@ -184,6 +186,8 @@ INT atoiW(LPWSTR sz);
 #define CHAR_A TEXT('A')
 #define CHAR_a TEXT('a')
 #define CHAR_Z TEXT('Z')
+#define CHAR_0 TEXT('0')
+#define CHAR_9 TEXT('9')
 
 // Default char for untranslatable unicode
 // MUST NOT BE an acceptable char for file systems!!
@@ -220,6 +224,8 @@ INT atoiW(LPWSTR sz);
 typedef HWND *PHWND;
 typedef INT DRIVE;
 typedef INT DRIVEIND;
+typedef INT TAB;
+typedef INT TABIND;
 
 #include "wfinfo.h"
 
@@ -562,6 +568,7 @@ LRESULT CALLBACK FrameWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam
 BOOL  AppCommandProc(DWORD id);
 LRESULT CALLBACK TreeWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK DriveWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK TabsWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK DrivesWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK VolumeWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK TreeChildWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam);
@@ -732,6 +739,12 @@ BOOL  RectTreeItem(HWND hwndLB, INT iItem, BOOL bFocusOn);
 
 #define GWL_LASTFOCUS    (10*sizeof(LONG_PTR))
 
+// szTabsClass
+
+#define GWL_CURTABIND     (0*sizeof(LONG_PTR))   // current selection in tabs window
+#define GWL_CURTABFOCUS   (1*sizeof(LONG_PTR))   // current focus in tabs window
+#define GWL_LPTSTRTAB     (2*sizeof(LONG_PTR))   // LPTSTR to Volume/Share string
+
 // szDrivesClass...
 
 #define GWL_CURDRIVEIND     (0*sizeof(LONG_PTR))   // current selection in drives window
@@ -777,6 +790,8 @@ BOOL  RectTreeItem(HWND hwndLB, INT iItem, BOOL bFocusOn);
 #define FS_GETSELECTION     (WM_USER+0x102)
 #define FS_GETDIRECTORY     (WM_USER+0x103)
 #define FS_GETDRIVE         (WM_USER+0x104)
+#define FS_GETTAB           (WM_USER+0x105)
+#define FS_SETTAB           (WM_USER+0x106)
 #define FS_SETDRIVE         (WM_USER+0x107)
 #define FS_GETFILESPEC      (WM_USER+0x108)
 #define FS_SETSELECTION     (WM_USER+0x109)
@@ -898,6 +913,20 @@ BOOL  RectTreeItem(HWND hwndLB, INT iItem, BOOL bFocusOn);
 #define BM_IND_OPENREPARSE  16
 #define BM_IND_FILREPARSE   17
 
+typedef struct _TAB_INFO {
+
+    //-----------------------------------
+    //STATUSNAME(Type);
+    //UINT  uType;
+
+    //-----------------------------------
+    INT   iOffset;
+    INT   index;
+
+    HWND       hwnd;
+    WCHAR      szName[MAX_FILESYSNAME];
+} TABINFO, * PTABINFO;
+
 typedef struct _DRIVE_INFO {
 
    INT   iBusy;
@@ -955,6 +984,7 @@ typedef struct _DRIVE_INFO {
 #define NONE             0
 #define TOOLBAR_FLAG     1
 #define DRIVEBAR_FLAG    2
+#define TABBAR_FLAG      3
 
 
 #ifdef _GLOBALS
@@ -1120,6 +1150,16 @@ Extern DWORD   gdwMachineId               EQ( MACHINEID_MICROSOFT );
 
 //----------------------------
 //
+//  aTabInfo support
+//
+//----------------------------
+
+#define rgiTab   rgiTabReal[iUpdateReal]
+Extern TAB       rgiTabReal[2][26];
+Extern TABINFO   aTabInfo[26];
+
+//----------------------------
+//
 //  aDriveInfo support
 //
 //----------------------------
@@ -1152,6 +1192,7 @@ Extern BOOL bMinOnRun        EQ( FALSE );
 Extern BOOL bIndexOnLaunch   EQ( TRUE );
 Extern BOOL bStatusBar       EQ( TRUE );
 
+Extern BOOL bTabBar              EQ( TRUE );
 Extern BOOL bDriveBar            EQ( TRUE );
 Extern BOOL bToolbar             EQ( TRUE );
 Extern BOOL bNewWinOnConnect     EQ( TRUE );
@@ -1178,11 +1219,13 @@ Extern TCHAR        chFirstDrive;           // 'A' or 'a'
 Extern TCHAR        szExtensions[]          EQ( TEXT("Extensions") );
 Extern TCHAR        szFrameClass[]          EQ( TEXT("WFS_Frame") );
 Extern TCHAR        szTreeClass[]           EQ( TEXT("WFS_Tree") );
+Extern TCHAR        szTabsClass[]           EQ( TEXT("WFS_Tabs") );
 Extern TCHAR        szDrivesClass[]         EQ( TEXT("WFS_Drives") );
 Extern TCHAR        szTreeControlClass[]    EQ( TEXT("DirTree") );
 Extern TCHAR        szDirClass[]            EQ( TEXT("WFS_Dir") );
 Extern TCHAR        szSearchClass[]         EQ( TEXT("WFS_Search") );
 
+Extern TCHAR        szTabBar[]              EQ( TEXT("TabBar") );
 Extern TCHAR        szDriveBar[]            EQ( TEXT("DriveBar") );
 Extern TCHAR        szToolbar[]             EQ( TEXT("ToolBar") );
 Extern TCHAR        szNewWinOnNetConnect[]  EQ( TEXT("NewWinOnNetConnect") );
@@ -1265,6 +1308,10 @@ Extern TCHAR        szTheINIFile[MAXPATHLEN];      // ini file location in %APPD
 Extern TCHAR szBytes[20];
 Extern TCHAR szSBytes[10];
 
+Extern INT  cTabs;
+Extern INT  dxTab;
+Extern INT  dyTab;
+
 Extern INT  cDrives;
 Extern INT  dxDrive;
 Extern INT  dyDrive;
@@ -1325,6 +1372,7 @@ Extern HWND    hwndMDIClient   EQ( NULL );
 Extern HWND    hwndSearch      EQ( NULL );
 Extern HWND    hwndDragging    EQ( NULL );
 
+Extern HWND  hwndTabBar        EQ( NULL );
 Extern HWND  hwndDriveBar      EQ( NULL );
 Extern HWND  hwndToolbar       EQ( NULL );
 Extern HWND  hwndDriveList     EQ( NULL );

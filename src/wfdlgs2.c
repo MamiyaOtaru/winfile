@@ -226,6 +226,7 @@ SearchDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam)
          // Show search window immediatley
          ShowWindow(hwndSearch, bMaximized ? SW_SHOWMAXIMIZED : SW_SHOWNORMAL);
          SetWindowPos(hwndSearch, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+         ResetTabInfo();
 
          break;
 

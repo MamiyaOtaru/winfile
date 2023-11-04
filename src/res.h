@@ -155,22 +155,23 @@
 #define IDM_ADDPLUSES       505
 #define IDM_EXPANDTREE      506
 
-#define IDM_DRIVEBAR      507   /* Options->Drivebar */
-#define IDM_TOOLBAR     508   /* Options->Toolbar */
-#define IDM_NEWWINONCONNECT 509  /* Options->New Window On Connect */
+#define IDM_TABBAR      507   /* Options->Tabbar */
+#define IDM_DRIVEBAR      508   /* Options->Drivebar */
+#define IDM_TOOLBAR     509   /* Options->Toolbar */
+#define IDM_NEWWINONCONNECT 510  /* Options->New Window On Connect */
 
-#define IDM_FONT            510
-#define IDM_SAVESETTINGS    511
+#define IDM_FONT            511
+#define IDM_SAVESETTINGS    512
 
-#define IDM_TOOLBARCUST     512
+#define IDM_TOOLBARCUST     513
 
 #ifdef PROGMAN
-#define IDM_SAVENOW         513
+#define IDM_SAVENOW         514
 #endif
 
-#define IDM_INDEXONLAUNCH   514
+#define IDM_INDEXONLAUNCH   515
 
-#define IDM_PREF          515
+#define IDM_PREF          516
 
 #define IDM_SECURITY        5
 #define IDM_PERMISSIONS     605      // !! WARNING HARD CODED !!

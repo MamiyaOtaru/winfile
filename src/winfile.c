@@ -121,6 +121,8 @@ ResizeControls(VOID)
    };
 
    RECT rc;
+   INT cTabsPerRow;
+   INT dyTabBar;
    INT cDrivesPerRow;
    INT dyDriveBar;
 
@@ -134,6 +136,9 @@ ResizeControls(VOID)
    // This stuff is nec since bRepaint in MoveWindow seems
    // broken.  By invalidating, we don't scroll bad stuff.
    //
+   if (bTabBar) {
+       InvalidateRect(hwndTabBar, NULL, FALSE);
+   }
    if (bDriveBar) {
       InvalidateRect(hwndDriveBar,NULL, FALSE);
    }
@@ -143,6 +148,23 @@ ResizeControls(VOID)
 
    GetEffectiveClientRect(hwndFrame, &rc, nViews);
    rc.right -= rc.left;
+
+   cTabsPerRow = rc.right / dxTab;
+   if (!cTabsPerRow)
+       cTabsPerRow++;
+
+   int tabs = cTabs;
+   if (tabs <= 0) {
+       tabs = 1; // ensure the tab bar has height when first created
+   }
+   dyTabBar = dyTab * ((tabs + cTabsPerRow - 1) / cTabsPerRow)
+       + 2 * dyBorder;
+
+   MoveWindow(hwndTabBar, rc.left - dyBorder, rc.top - dyBorder,
+       rc.right, dyTabBar, FALSE);
+
+   if (bTabBar)
+       rc.top += dyTabBar - dyBorder;
 
    cDrivesPerRow = rc.right / dxDrive;
    if (!cDrivesPerRow)
@@ -748,6 +770,16 @@ FrameWndProc(HWND hwnd, UINT wMsg, WPARAM wParam, LPARAM lParam)
             return -1L;
          }
 
+         // make new tabs window
+
+         hwndTabBar = CreateWindow(szTabsClass, NULL,
+             bTabBar ? WS_CHILD|WS_BORDER|WS_VISIBLE|WS_CLIPSIBLINGS :
+                WS_CHILD|WS_BORDER|WS_CLIPSIBLINGS,
+             0, 0, 0, 0, hwndFrame, 0, hAppInstance, NULL);
+
+         if (!hwndTabBar)
+             return -1L;
+
          // make new drives window
 
          hwndDriveBar = CreateWindow(szDrivesClass, NULL,
@@ -835,6 +867,7 @@ FrameWndProc(HWND hwnd, UINT wMsg, WPARAM wParam, LPARAM lParam)
       }
       hwndFrame = NULL;
       PostQuitMessage(0);
+      DestroyWindow(hwndTabBar);
       DestroyWindow(hwndDriveBar);
       break;
 
@@ -1131,7 +1164,11 @@ DoDefault:
 
       }
       else {
-         return DefFrameProc(hwnd, hwndMDIClient, wMsg, wParam, lParam);
+         LRESULT result = DefFrameProc(hwnd, hwndMDIClient, wMsg, wParam, lParam);
+         if (wMsg == WM_COMMAND && wParam == SC_CLOSE) {
+             ResetTabInfo();
+         }
+         return result;
       }
    }
 
