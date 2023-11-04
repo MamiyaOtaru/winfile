@@ -1713,7 +1713,7 @@ AttribsDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam)
 
       case IDD_VERSION_KEY:
 
-         if (GET_WM_COMMAND_CMD(wParam,lParam) != LBN_SELCHANGE)
+         if (GET_WM_COMMAND_CMD(wParam,lParam) != LBN_SELCHANGE) // TODO would we need an && != LBN_RCLICKED?
             break;
          idx = (INT)SendDlgItemMessage(hDlg, IDD_VERSION_KEY, LB_GETCURSEL, 0, 0L);
          lpszValue = (LPTSTR)SendDlgItemMessage(hDlg, IDD_VERSION_KEY, LB_GETITEMDATA, idx, 0L);

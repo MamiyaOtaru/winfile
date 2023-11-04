@@ -2671,6 +2671,27 @@ UpdateSelection:
          SetWindowLongPtr(hwndParent, GWL_LASTFOCUS, (LPARAM)GET_WM_COMMAND_HWND(wParam, lParam));
 
          goto UpdateSelection;
+
+      case FSC_RCLICKED:
+      {
+          INT CurSel;
+
+          //
+          // CurSel is returned from SendMessage
+          //
+          CurSel = (INT)SendMessage(hwnd, TC_GETDIR, (WPARAM)-1, (LPARAM)szPath);
+          if (CurSel == -1)
+          {
+              break;
+          }
+
+          AddBackslash(szPath); // needed
+          // TODO: why isn't this part of TC_SETDRIVE?  currently when a tree only is shown, the MDI window text is not updated
+          SetRightClickedText(hwndParent, szPath);
+
+          break;
+      }
+
       }
       break;
    }

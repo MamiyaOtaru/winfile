@@ -15,6 +15,7 @@
 #include <stdlib.h>
 
 LPTSTR CurDirCache[26];
+WCHAR rightClickedText[MAXPATHLEN * 2 + 10];
 
 #define MAXHISTORY 32
 DWORD historyCur = 0;
@@ -772,6 +773,21 @@ SetMDIWindowText(
    ResetTabInfo();
 }
 
+INT
+GetRightClickedText(HWND hwnd, LPWSTR szTitle, INT size) 
+{
+    lstrcpy(szTitle, rightClickedText);
+    return 0;
+}
+
+VOID
+SetRightClickedText(
+    HWND hwnd,
+    LPWSTR szTitle)
+{
+    lstrcpy(rightClickedText, szTitle);
+}
+
 #define ISDIGIT(c)  ((c) >= TEXT('0') && (c) <= TEXT('9'))
 
 INT
@@ -979,6 +995,26 @@ GetSelection(INT iSelType, PBOOL pbDir)
 
    return (LPTSTR)SendMessage(hwndActive,FS_GETSELECTION,
       (WPARAM)iSelType, (LPARAM)pbDir);
+}
+
+//--------------------------------------------------------------------------
+//
+//  GetRightClicked() -
+//  caller must free LPTSTR returned.
+//
+//  LPTSTR must have 2 chars for checkesc safety at end
+//
+//--------------------------------------------------------------------------
+
+LPTSTR
+GetRightClicked(INT iSelType, PBOOL pbDir)
+{
+    HWND  hwndActive;
+
+    hwndActive = (HWND)SendMessage(hwndMDIClient, WM_MDIGETACTIVE, 0, 0L);
+
+    return (LPTSTR)SendMessage(hwndActive, FS_GETRIGHTCLICKED,
+        (WPARAM)iSelType, (LPARAM)pbDir);
 }
 
 

@@ -1035,7 +1035,7 @@ AppCommandProc(DWORD id)
 #define CmdParamFormat TEXT("/k cd /d ")
       TCHAR szParams[MAXPATHLEN + max(COUNTOF(CmdParamFormat), COUNTOF(ConEmuParamFormat))];
 
-      szDir = GetSelection(1 | 4 | 16, &bDir);
+      szDir = GetRightClicked(1 | 4 | 16, &bDir);
       if (!bDir && szDir)
          StripFilespec(szDir);
 
@@ -1085,7 +1085,7 @@ AppCommandProc(DWORD id)
        LPTSTR szDir;
        TCHAR szToRun[MAXPATHLEN];
 
-       szDir = GetSelection(1 | 4 | 16, &bDir);
+       szDir = GetRightClicked(1 | 4 | 16, &bDir);
        if (!bDir && szDir)
            StripFilespec(szDir);
 
@@ -1110,7 +1110,7 @@ AppCommandProc(DWORD id)
 #define PowerShellParamFormat TEXT(" -noexit -command \"cd \\\"%s\\\"\"")
            TCHAR szParams[MAXPATHLEN + COUNTOF(PowerShellParamFormat)];
 
-           szDir = GetSelection(1 | 4 | 16, &bDir);
+           szDir = GetRightClicked(1 | 4 | 16, &bDir);
            if (!bDir && szDir)
                StripFilespec(szDir);
 
@@ -1134,7 +1134,7 @@ AppCommandProc(DWORD id)
 			TCHAR szToRun[MAXPATHLEN];
 			LPTSTR szDir;
 
-			szDir = GetSelection(1 | 4 | 16, &bDir);
+			szDir = GetRightClicked(1 | 4 | 16, &bDir);
 			if (!bDir && szDir)
 				StripFilespec(szDir);
 
@@ -2064,7 +2064,7 @@ CHECK_OPTION:
        break;
 
     case IDM_NEWWINDOW:
-       NewTree((INT)SendMessage(hwndActive, FS_GETDRIVE, 0, 0L) - CHAR_A, hwndActive);
+       NewTree((INT)SendMessage(hwndActive, FS_GETDRIVE, 0, 0L) - CHAR_A, hwndActive); // ** jay todo allow right click to read from rightclick dir not selected dir
        break;
 
     case IDM_CASCADE:

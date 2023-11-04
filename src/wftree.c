@@ -465,6 +465,57 @@ TreeWndProc(
           AddBackslash((LPTSTR)lParam);        // terminate with a backslash
           break;
 
+      case FS_GETRIGHTCLICKED:
+      {
+#define pfDir            (BOOL *)lParam
+          LPTSTR p;
+
+          GetTreeWindows(hwnd, &hwndTree, &hwndDir);
+          hwndFocus = GetTreeFocus(hwnd);
+
+          if (hwndFocus == hwndDir || !hwndTree) {
+              return SendMessage(hwndDir, FS_GETRIGHTCLICKED, wParam, lParam); // TODO add this handler in dir
+          }
+          else {
+
+              //
+              // +2 for checkesc safety
+              //
+              p = (LPTSTR)LocalAlloc(LPTR, ByteCountOf(MAXPATHLEN + 2));
+              if (p) {
+                  SendMessage(hwnd, FS_GETRIGHTCLICKEDDIRECTORY, MAXPATHLEN, (LPARAM)(LPTSTR)p);
+                  StripBackslash(p);
+
+                  if (!(wParam & 16)) CheckEsc(p);
+
+                  if (wParam == 2) {      // BUG ??? wParam should be fMostRecentOnly
+                      if (pfDir) {
+                          *pfDir = IsLFN(p);
+                      }
+                      LocalFree((HANDLE)p);
+                      return (LRESULT)p;
+                  }
+              }
+              if (pfDir) {
+                  *pfDir = TRUE;
+              }
+              return (LRESULT)p;
+          }
+#undef pfDir
+      }
+
+      case FS_GETRIGHTCLICKEDDIRECTORY:
+
+          // wParam is the length of the string pointed to by lParam
+          // returns in lParam ANSI directory string with
+          // a trailing backslash.  if you want to do a SetCurrentDirector()
+          // you must first StripBackslash() the thing!
+          
+          // ** jay get stored text instead of the window title!  rework to pass back more of an item instead?
+          GetRightClickedText(hwnd, (LPTSTR)lParam, (INT)wParam);        // get the string
+          StripFilespec((LPTSTR)lParam);        // Remove the trailing extension
+          AddBackslash((LPTSTR)lParam);        // terminate with a backslash
+          break;
 
       case FS_GETFILESPEC:
 

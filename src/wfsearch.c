@@ -871,6 +871,20 @@ SearchWndProc(
          }
          break;
       }
+
+      case FSC_RCLICKED:
+      {
+          /*
+          INT i;
+
+          ExtSelItemsInvalidate();
+
+          for (i = 0; i < iNumExtensions; i++) {
+              (extensions[i].ExtProc)(hwndFrame, FMEVENT_SELCHANGE, 0L);
+          }*/
+          // TODO handle right click in search window?
+          break;
+      }
       }
       break;
 
