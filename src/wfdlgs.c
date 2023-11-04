@@ -846,10 +846,12 @@ KillQuoteTrailSpace( LPTSTR szFile )
 VOID
 ActivateCommonContextMenu(HWND hwnd, HWND hwndLB, LPARAM lParam)
 {
-   DWORD cmd, item;
+   DWORD cmd, item, originalItem;
    POINT pt;
 
    HMENU hMenu = GetSubMenu(LoadMenu(hAppInstance, TEXT("CTXMENU")), 0);
+
+   originalItem = (DWORD)SendMessage(hwndLB, LB_GETCURSEL, 0, 0);
 
    if (lParam == -1)
    {
@@ -886,7 +888,6 @@ ActivateCommonContextMenu(HWND hwnd, HWND hwndLB, LPARAM lParam)
             // tree control; do selection differently
             SendMessage(hwndLB, LB_SETCURSEL, (WPARAM)item, 0L); // activates item.  
             SendMessage(hwnd, WM_COMMAND, GET_WM_COMMAND_MPS(0, hwndLB, FSC_RCLICKED)); // sets window text ^H^H^H right clicked text
-            // TODO reselect original folder
          }
          else
          {
@@ -909,4 +910,5 @@ ActivateCommonContextMenu(HWND hwnd, HWND hwndLB, LPARAM lParam)
    }
 
    DestroyMenu(hMenu);
+   SendMessage(hwndLB, LB_SETCURSEL, (WPARAM)originalItem, 0L);
 }

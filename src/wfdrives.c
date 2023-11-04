@@ -67,7 +67,7 @@ NewTree(
       return;
 
    pszSearchDir = (LPWSTR)SendMessage(hwndSrc,
-      FS_GETSELECTION,
+      FS_GETRIGHTCLICKED,
       1 | 4 | 16,
       (LPARAM)&bDir);
 

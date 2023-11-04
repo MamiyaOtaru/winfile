@@ -1033,7 +1033,7 @@ AppCommandProc(DWORD id)
 #define CmdParamFormat TEXT("/k cd /d ")
       TCHAR szParams[MAXPATHLEN + max(COUNTOF(CmdParamFormat), COUNTOF(ConEmuParamFormat))];
 
-      szDir = GetRightClicked(1 | 4 | 16, &bDir); // need to redo this to read from somewhere else
+      szDir = GetRightClicked(1 | 4 | 16, &bDir);
       if (!bDir && szDir)
          StripFilespec(szDir);
 
