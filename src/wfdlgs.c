@@ -868,6 +868,9 @@ ActivateCommonContextMenu(HWND hwnd, HWND hwndLB, LPARAM lParam)
 
       ScreenToClient(hwndLB, &pt);
       item = (DWORD)SendMessage(hwndLB, LB_ITEMFROMPOINT, 0, POINTTOPOINTS(pt));
+      // get item that was clicked.   Ideally here would check if it is a member of the current selection, 
+      // and if so act on the entire selection
+      // otherwise would ideally act on it without selecting it
 
       if (HIWORD(item) == 0)
       {
@@ -881,8 +884,9 @@ ActivateCommonContextMenu(HWND hwnd, HWND hwndLB, LPARAM lParam)
          // if hwnd is the tree control within the parent window
          if (hwndTree == hwnd) {
             // tree control; do selection differently
-            SendMessage(hwndLB, LB_SETCURSEL, (WPARAM)item, 0L);
-            SendMessage(hwnd, WM_COMMAND, GET_WM_COMMAND_MPS(0, hwndLB, LBN_SELCHANGE));
+            SendMessage(hwndLB, LB_SETCURSEL, (WPARAM)item, 0L); // activates item.  
+            SendMessage(hwnd, WM_COMMAND, GET_WM_COMMAND_MPS(0, hwndLB, FSC_RCLICKED)); // sets window text ^H^H^H right clicked text
+            // TODO reselect original folder
          }
          else
          {

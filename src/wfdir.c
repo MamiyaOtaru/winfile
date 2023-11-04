@@ -879,6 +879,17 @@ DirWndProc(
                        GWL_LASTFOCUS,
                        (LPARAM)GET_WM_COMMAND_HWND(wParam, lParam));
          break;
+
+      case FSC_RCLICKED:
+          /*
+          ExtSelItemsInvalidate();
+
+          for (i = 0; i < iNumExtensions; i++) {
+              (extensions[i].ExtProc)(hwndFrame, FMEVENT_SELCHANGE, 0L);
+          }
+          UpdateStatus(hwndParent);*/
+          // TODO handle right click to store temporary "selection"
+          break;
       }
       break;
 
