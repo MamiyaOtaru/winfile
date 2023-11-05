@@ -886,13 +886,12 @@ ActivateCommonContextMenu(HWND hwnd, HWND hwndLB, LPARAM lParam)
          // if hwnd is the tree control within the parent window
          if (hwndTree == hwnd) {
             // tree control; do selection differently
-            SendMessage(hwndLB, LB_SETCURSEL, (WPARAM)item, 0L); // activates item.  
-            SendMessage(hwnd, WM_COMMAND, GET_WM_COMMAND_MPS(0, hwndLB, FSC_RCLICKED)); // sets window text ^H^H^H right clicked text
+            SendMessage(hwndLB, LB_SETCURSEL, (WPARAM)item, 0L);
+            SendMessage(hwnd, WM_COMMAND, GET_WM_COMMAND_MPS(0, hwndLB, FS_RCLICKED));
          }
          else
          {
-            SendMessage(hwndLB, LB_SETSEL, (WPARAM)FALSE, (LPARAM)-1);
-            SendMessage(hwndLB, LB_SETSEL, (WPARAM)TRUE, (LPARAM)item);
+            SendMessage(hwnd, FS_RCLICKED, (WPARAM)item, (LPARAM)0);
 
             BOOL bDir = FALSE;
             SendMessage(hwnd, FS_GETSELECTION, 5, (LPARAM)&bDir);
