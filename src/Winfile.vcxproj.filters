@@ -37,6 +37,8 @@
     <ClCompile Include="winfile.c" />
     <ClCompile Include="wnetcaps.c" />
     <ClCompile Include="wfloc.c" />
+    <ClCompile Include="resize.c" />
+    <ClCompile Include="wftabs.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dbg.h" />
@@ -62,6 +64,8 @@
     <ClInclude Include="winfile.h" />
     <ClInclude Include="wnetcaps.h" />
     <ClInclude Include="res.h" />
+    <ClInclude Include="resize.h" />
+    <ClInclude Include="wftabs.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="res.rc" />
