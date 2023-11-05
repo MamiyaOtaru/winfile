@@ -474,7 +474,7 @@ TreeWndProc(
           hwndFocus = GetTreeFocus(hwnd);
 
           if (hwndFocus == hwndDir || !hwndTree) {
-              return SendMessage(hwndDir, FS_GETRIGHTCLICKED, wParam, lParam); // TODO add this handler in dir
+              return SendMessage(hwndDir, FS_GETSELECTION, wParam, lParam);
           }
           else {
 

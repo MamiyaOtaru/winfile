@@ -880,22 +880,35 @@ DirWndProc(
                        (LPARAM)GET_WM_COMMAND_HWND(wParam, lParam));
          break;
 
-      case FSC_RCLICKED:
-          /*
-          ExtSelItemsInvalidate();
-
-          for (i = 0; i < iNumExtensions; i++) {
-              (extensions[i].ExtProc)(hwndFrame, FMEVENT_SELCHANGE, 0L);
-          }
-          UpdateStatus(hwndParent);*/
-          // TODO handle right click to store temporary "selection"
-          break;
       }
       break;
 
    case WM_CONTEXTMENU:
       ActivateCommonContextMenu(hwnd, hwndLB, lParam);
          break;
+
+   case FS_RCLICKED:
+   {
+       LPXDTALINK lpxdta;
+       DWORD item = wParam;
+       INT iMac = (INT)SendMessage(hwndLB, LB_GETSELCOUNT, 0, 0L);
+       LPINT lpSelItems = (LPINT)LocalAlloc(LMEM_FIXED, sizeof(INT) * iMac);
+       iMac = (INT)SendMessage(hwndLB,
+           LB_GETSELITEMS,
+           (WPARAM)iMac,
+           (LPARAM)lpSelItems);
+       boolean clickedOnSelected = 0;
+       for (i = 0; i < iMac; i++) {
+           if (lpSelItems[i] == item) {
+               clickedOnSelected = 1;
+           }
+       }
+       if (!clickedOnSelected) { // clicked on something new, select it
+           SendMessage(hwndLB, LB_SETSEL, (WPARAM)FALSE, (LPARAM)-1); // deselect current item
+           SendMessage(hwndLB, LB_SETSEL, (WPARAM)TRUE, (LPARAM)item); // select clicked item
+       }
+       break;
+   }
 
    case WM_VKEYTOITEM:
       switch (GET_WM_VKEYTOITEM_CODE(wParam, lParam)) {

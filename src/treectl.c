@@ -2672,7 +2672,7 @@ UpdateSelection:
 
          goto UpdateSelection;
 
-      case FSC_RCLICKED:
+      case FS_RCLICKED:
       {
           INT CurSel;
 

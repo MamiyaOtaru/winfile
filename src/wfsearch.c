@@ -872,7 +872,7 @@ SearchWndProc(
          break;
       }
 
-      case FSC_RCLICKED:
+      case FS_RCLICKED:
       {
           /*
           INT i;

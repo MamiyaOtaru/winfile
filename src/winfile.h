@@ -777,7 +777,6 @@ BOOL  RectTreeItem(HWND hwndLB, INT iItem, BOOL bFocusOn);
 #define FSC_RMDIR           8
 #define FSC_RMDIRQUIET      9
 #define FSC_MKDIRQUIET      10
-#define FSC_RCLICKED        11
 
 #define WM_LBTRACKPT        0x131
 
@@ -800,8 +799,6 @@ BOOL  RectTreeItem(HWND hwndLB, INT iItem, BOOL bFocusOn);
 #define FS_SETDRIVE         (WM_USER+0x107)
 #define FS_GETFILESPEC      (WM_USER+0x108)
 #define FS_SETSELECTION     (WM_USER+0x109)
-#define FS_GETRIGHTCLICKED  (WM_USER+0x150)
-#define FS_GETRIGHTCLICKEDDIRECTORY  (WM_USER+0x151)
 
 // modeless format/copy support
 #define FS_CANCELBEGIN      (WM_USER+0x10A)
@@ -828,6 +825,10 @@ BOOL  RectTreeItem(HWND hwndLB, INT iItem, BOOL bFocusOn);
 
 #define FS_ENABLEFSC               (WM_USER+0x121)
 #define FS_DISABLEFSC              (WM_USER+0x122)
+
+#define FS_RCLICKED                (WM_USER+0x150)//11
+#define FS_GETRIGHTCLICKED         (WM_USER+0x151)
+#define FS_GETRIGHTCLICKEDDIRECTORY      (WM_USER+0x152)
 
 #define ATTR_READWRITE      0x0000
 #define ATTR_READONLY       FILE_ATTRIBUTE_READONLY     // == 0x0001
