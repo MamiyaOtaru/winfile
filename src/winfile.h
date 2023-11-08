@@ -826,7 +826,6 @@ BOOL  RectTreeItem(HWND hwndLB, INT iItem, BOOL bFocusOn);
 #define FS_ENABLEFSC               (WM_USER+0x121)
 #define FS_DISABLEFSC              (WM_USER+0x122)
 
-#define FS_RCLICKED                (WM_USER+0x150)//11
 #define FS_GETRIGHTCLICKED         (WM_USER+0x151)
 #define FS_GETRIGHTCLICKEDDIRECTORY      (WM_USER+0x152)
 
